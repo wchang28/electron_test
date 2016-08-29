@@ -105,6 +105,16 @@ export function Test() {
 }
 */
 
-export function Test() {
-  UploadTest();
+export function Test(done:(err:any, result:any) => void) {
+
+    let handler = (err:any, ret:any) => {
+        if (err)
+            console.error("!!! Error: " + JSON.stringify(err));
+        else
+            console.log(typeof ret === 'string'? ret : JSON.stringify(ret));
+
+        done(err, ret);
+    }
+
+  UploadTest(handler);
 }

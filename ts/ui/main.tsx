@@ -6,10 +6,15 @@ import * as ReactDOM from 'react-dom';
 
 let x = remote.require('./main');
 let test = x.Test;
-test();
+test((err:any, ret:any) => {
+    if (err)
+        alert(JSON.stringify(err));
+    else
+        alert(JSON.stringify(ret));
+});
 
-let greeting = new g.Greeting();
-greeting.sayHi();
+//let greeting = new g.Greeting();
+//greeting.sayHi();
 
 interface ITestAppProps {
 }
