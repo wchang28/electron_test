@@ -9,16 +9,13 @@ export interface Status {
 // emit the following events
 // 1. status-changed (status)
 // 2. files-count (files-count)
-// 3. n-walks-changed (n-walks)
 export class FolderEnumerator extends events.EventEmitter {
-    private __nWalks:number;
     private __running: boolean;
     private __stopping: boolean;
     private __results: string[];
     constructor() {
         super();
         this.__running = false;
-        this.__nWalks = 0;
         this.__stopping = false;
         this.__results = [];
     }
@@ -49,58 +46,42 @@ export class FolderEnumerator extends events.EventEmitter {
     get filesCount() : number {
         return (this.__results ? this.__results.length : 0);
     }
-    private decrementWalkCount() : number {
-        this.__nWalks--;
-        this.emit('n-walks-changed', this.__nWalks);
-        if (this.__nWalks === 0) {
-            this.__running = false;
-            this.__stopping = false;
-            this.emit('status-changed', this.status);
-        }
-        return this.__nWalks;
-    }
     private walk(dir:string, done: (err:any) => void) : void {
-        let exit = (err:any) => {
-            this.decrementWalkCount();
-            done(err);
-        }
-
-        this.__nWalks++;
-        this.emit('n-walks-changed', this.__nWalks);
-
-        if (this.__stopping) {
-            exit(null);
+        console.log('walk in ' + dir);
+        if (this.stopping) {
+            done(null);
         } else {
             fs.readdir(dir, (err, list: string[]) => {
                 if (err) {
-                    exit(err);
-                } else if (this.__stopping) {
-                    exit(null);
+                    done(err);
                 } else {
-                    var i = 0;
-                    let next = () => {
-                        if (this.__stopping)
-                            exit(null);
-                        else {
-                            let file = list[i++];
-                            if (!file) {    // no more file
-                                exit(null);
-                            }
+                    if (list && list.length > 0) {
+                        let next = (i:number) => {
+                            let file = list[i];
                             file = dir + '/' + file;
                             fs.stat(file, (err, stats:fs.Stats) => {
                                 if (stats && stats.isDirectory()) { // a folder
                                     this.walk(file, (err:any) => {
-                                        next();
+                                        console.log('walk out ' + file);
+                                        if (i+1 < list.length)
+                                            next(i+1);
+                                        else
+                                            done(null);
                                     });
                                 } else {    // a regular file
                                     this.__results.push(file);
                                     this.emit('files-count', this.filesCount);
-                                    next();
+                                    if (i+1 < list.length)
+                                        next(i+1);
+                                    else
+                                        done(null);
                                 }
                             });
-                        }
-                    };
-                    next();
+                        };
+                        next(0);
+                    } else {    // no file in dir
+                        done(null);
+                    }
                 }
             });
         }
@@ -111,7 +92,10 @@ export class FolderEnumerator extends events.EventEmitter {
             this.running = true;
             this.__results = [];
             this.emit('files-count', this.filesCount);
-            this.walk(dir, (err:any) => {});
+            this.walk(dir, (err:any) => {
+                this.running = false;
+                this.stopping = false;
+            });
         }
     }
 

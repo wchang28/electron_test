@@ -137,11 +137,12 @@ export function selectAndEnumFilesInDir(done:(err:any) => void) {
     console.log('dir=' + dir);
     enumerator.on('status-changed', (status:fe.Status) => {
       console.log('status=' + JSON.stringify(status));
+      if (!status.running) {
+        console.log('files-count=' + enumerator.filesCount.toString());
+      }
     }).on('files-count', (filesCount: number) => {
-      console.log('files-count=' + filesCount.toString());
-    }).on('n-walks-changed', (n_walks:number) => {
-      console.log('n_walks=' + n_walks.toString());
-    });
+      //console.log('files-count=' + filesCount.toString());
+    })
     enumerator.run(dir);
   }
 }
