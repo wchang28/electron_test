@@ -1,11 +1,14 @@
 {
-  "name": "your-app",
-  "version": "0.1.0",
+  "name": "electron_test",
+  "version": "0.0.1",
   "main": "./js/main.js",
   "dependencies": {
     "electron": "^1.3.4",
+    "form-data": "^1.0.1",
+    "rcf": "git+https://github.com/wchang28/rcf.git",
     "react": "^15.3.1",
-    "react-dom": "^15.3.1"
+    "react-dom": "^15.3.1",
+    "rest-node": "git+https://github.com/wchang28/rest-node.git"
   },
   "devDependencies": {
     "electron-builder": "^5.34.1",

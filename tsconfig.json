@@ -12,6 +12,7 @@
   "files": [
     "./typings/index.d.ts",
     "./ts/main.ts",
+    "./ts/test.ts",
     "./ts/ui/main.tsx"
   ]
 }
