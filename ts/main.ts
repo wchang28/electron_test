@@ -141,9 +141,17 @@ export function selectAndEnumFilesInDir(done:(err:any) => void) {
         console.log('files-count=' + enumerator.filesCount.toString());
       }
     }).on('files-count', (filesCount: number) => {
-      //console.log('files-count=' + filesCount.toString());
+      console.log('files-count=' + filesCount.toString());
     })
     enumerator.run(dir);
+    /*
+    setTimeout(() => {
+      if (enumerator.running) {
+        console.log('stopping the run');
+        enumerator.stop();
+      }
+    }, 15000);
+    */
   }
 }
 

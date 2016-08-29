@@ -47,7 +47,7 @@ export class FolderEnumerator extends events.EventEmitter {
         return (this.__results ? this.__results.length : 0);
     }
     private walk(dir:string, done: (err:any) => void) : void {
-        console.log('walk in ' + dir);
+        //console.log('walk in ' + dir);
         if (this.stopping) {
             done(null);
         } else {
@@ -62,7 +62,7 @@ export class FolderEnumerator extends events.EventEmitter {
                             fs.stat(file, (err, stats:fs.Stats) => {
                                 if (stats && stats.isDirectory()) { // a folder
                                     this.walk(file, (err:any) => {
-                                        console.log('walk out ' + file);
+                                        //console.log('walk out ' + file);
                                         if (i+1 < list.length)
                                             next(i+1);
                                         else
@@ -93,8 +93,8 @@ export class FolderEnumerator extends events.EventEmitter {
             this.__results = [];
             this.emit('files-count', this.filesCount);
             this.walk(dir, (err:any) => {
-                this.running = false;
                 this.stopping = false;
+                this.running = false;
             });
         }
     }
