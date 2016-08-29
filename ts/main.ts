@@ -57,6 +57,7 @@ app.on('activate', () => {
 
 import {dialog} from 'electron';
 import * as fs from 'fs';
+import {FolderEnumerator} from './folderEnumerator';
 
 let walk = (dir:string, done: (err:any, results?:string[]) => void) : void => {
 	let results = [];
