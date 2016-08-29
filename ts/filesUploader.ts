@@ -74,7 +74,11 @@ export class FilesUploader extends events.EventEmitter {
     }
     private uploadFileImp(file:string, fileNameMaker: (file:string) => string, done:(err:any) => void) {
         let form = new FormData();
-        form.append("file", fs.createReadStream(file), fileNameMaker(file));
+        let s = fileNameMaker(file);
+        let ret = path.parse(file);
+        console.log(JSON.stringify(ret));
+
+        form.append("file", fs.createReadStream(file), ret.base);
         //api.$F('/services/upload/file_upload', form, done);
         api.$F('/services/upload/s3_upload', form, done);
     }

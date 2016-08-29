@@ -150,18 +150,20 @@ export function selectAndEnumFilesInDir(done:(err:any) => void) {
     enumerator.run(dir, (canceled: boolean) => {
       if (!canceled) {
         //console.log(enumerator.results);
-        let fileNameMaker = (file:string): string =>{
-          return file.substr((dir + '/').length);
+        let subFilderMaker = (file:string): string => {
+          let ret = path.parse(file);
+          return ret.dir.substr((dir).length);
         };
         for (let i in enumerator.results) {
-          console.log(fileNameMaker(enumerator.results[i]));
+          console.log(subFilderMaker(enumerator.results[i]));
         }
+        
         /*
         let uploader = new fu.FilesUploader();
         uploader.on('upload-progress', (status:fu.Status) => {
-          console.log('status=' + JSON.stringify(status));
+          //console.log('status=' + JSON.stringify(status));
         })
-        uploader.upload(enumerator.results, fileNameMaker, (canceled: boolean) => {
+        uploader.upload(enumerator.results, subFilderMaker, (canceled: boolean) => {
           console.log('Done');
         });
         */
