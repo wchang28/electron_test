@@ -84,6 +84,8 @@ let walk = (dir:string, done: (err:any, results?:string[]) => void) : void => {
 	});
 };
 
+import {Test as UploadTest} from './test';
+
 export function Test() {
   let dirs = dialog.showOpenDialog(win,{properties: ['openFile', 'openDirectory']});
   if (dirs && dirs.length > 0) {
