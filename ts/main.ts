@@ -154,7 +154,7 @@ export function selectAndEnumFilesInDir(done:(err:any) => void) {
         let subFilderMaker = (file:string): string => {
           let ret = path.parse(file);
           let s = ret.dir.substr((dir).length)
-          return (s.length === 0 ? '/' : s);
+          return s;
         };
         /*
         for (let i in enumerator.results) {

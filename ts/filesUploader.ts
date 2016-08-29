@@ -76,7 +76,7 @@ export class FilesUploader extends events.EventEmitter {
         let form = new FormData();
         let subFilder = subFilderMaker(file);
         let ret = path.parse(file);
-        form.append('subFilder', subFilder);
+        form.append('subFolder', subFilder);
         form.append("file", fs.createReadStream(file), ret.base);
         //api.$F('/services/upload/file_upload', form, done);
         api.$F('/services/upload/s3_upload', form, done);
