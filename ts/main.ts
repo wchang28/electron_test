@@ -84,28 +84,48 @@ let walk = (dir:string, done: (err:any, results?:string[]) => void) : void => {
 	});
 };
 
-import {Test as UploadTest} from './test';
+export interface IFolderSelected {
+  dir: string;
+  files: string[];
+}
 
-export function selectAndEnumFilesInDir(done:(err:any, result:any) => void) {
+export interface IFolderSelectedStat {
+  dir: string;
+  numFiles: number;
+}
+
+let __selected: IFolderSelected = null;
+
+export function getCurrentFolderSelectedStat() : IFolderSelectedStat {
+  return (__selected && __selected.dir && __selected.files && __selected.files.length > 0 ? {dir:__selected.dir, numFiles: __selected.files.length} : null);
+}
+
+export function selectAndEnumFilesInDir(done:(err:any) => void) {
   let dirs = dialog.showOpenDialog(win,{properties: ['openFile', 'openDirectory']});
   if (dirs && dirs.length > 0) {
     let dir = dirs[0];
     console.log('dir=' + dir);
     walk(dir , (err: any, results:string[]) => {
       if (!err) {
+        __selected = {
+          dir
+          ,files: results
+        };
         console.log(results);
         console.log('========================================================');
         console.log('number of files: ' + results.length);
         console.log('========================================================');
-        done(null, results);
+        done(null);
       } else
-        done(err, null);
+        done(err);
     });
 
   } else {
-    done(null, []);
+    done(null);
   }
 }
+
+import {Test as UploadTest} from './test';
 
 /*
 export function Test(done:(err:any, result:any) => void) {
