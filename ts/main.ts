@@ -67,8 +67,8 @@ let walk = (dir:string, done: (err:any, results?:string[]) => void) : void => {
 			let file = list[i++];
 			if (!file) return done(null, results);
 			file = dir + '/' + file;
-			fs.stat(file, function(err, stat) {
-				if (stat && stat.isDirectory()) {
+			fs.stat(file, function(err, stats:fs.Stats) {
+				if (stats && stats.isDirectory()) {
 					walk(file, (err:any, res?:string[]) => {
 						results = results.concat(res);
 						next();
