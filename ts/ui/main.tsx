@@ -7,10 +7,10 @@ import * as ReactDOM from 'react-dom';
 let x = remote.require('./main');
 let selectAndEnumFilesInDir = x.selectAndEnumFilesInDir;
 selectAndEnumFilesInDir((err:any, ret:any) => {
-    //if (err)
-    //    alert(JSON.stringify(err));
-    //else
-    //    alert(JSON.stringify(ret));
+    if (err)
+        console.log(JSON.stringify(err));
+    else
+        console.log(JSON.stringify(ret));
 });
 
 //let greeting = new g.Greeting();
