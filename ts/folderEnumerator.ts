@@ -8,8 +8,8 @@ export interface Status {
 
 // emit the following events
 // 1. status-changed (status)
-// 2. n-walks-changed (n-walks)
-// 3. files-count (files-count)
+// 2. files-count (files-count)
+// 3. n-walks-changed (n-walks)
 export class FolderEnumerator extends events.EventEmitter {
     private __nWalks:number;
     private __running: boolean;

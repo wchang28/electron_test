@@ -57,7 +57,7 @@ app.on('activate', () => {
 
 import {dialog} from 'electron';
 import * as fs from 'fs';
-import {FolderEnumerator} from './folderEnumerator';
+import * as fe from './folderEnumerator';
 
 let walk = (dir:string, done: (err:any, results?:string[]) => void) : void => {
 	let results = [];
@@ -101,6 +101,7 @@ export function getCurrentFolderSelectedStat() : IFolderSelectedStat {
   return (__selected && __selected.dir && __selected.files && __selected.files.length > 0 ? {dir:__selected.dir, numFiles: __selected.files.length} : null);
 }
 
+/*
 export function selectAndEnumFilesInDir(done:(err:any) => void) {
   let dirs = dialog.showOpenDialog(win,{properties: ['openFile', 'openDirectory']});
   if (dirs && dirs.length > 0) {
@@ -125,8 +126,27 @@ export function selectAndEnumFilesInDir(done:(err:any) => void) {
     done(null);
   }
 }
+*/
 
-import {Test as UploadTest} from './test';
+let enumerator = new fe.FolderEnumerator();
+
+export function selectAndEnumFilesInDir(done:(err:any) => void) {
+  let dirs = dialog.showOpenDialog(win,{properties: ['openFile', 'openDirectory']});
+  if (dirs && dirs.length > 0) {
+    let dir = dirs[0];
+    console.log('dir=' + dir);
+    enumerator.on('status-changed', (status:fe.Status) => {
+      console.log('status=' + JSON.stringify(status));
+    }).on('files-count', (filesCount: number) => {
+      console.log('files-count=' + filesCount.toString());
+    }).on('n-walks-changed', (n_walks:number) => {
+      console.log('n_walks=' + n_walks.toString());
+    });
+    enumerator.run(dir);
+  }
+}
+
+//import {Test as UploadTest} from './test';
 
 /*
 export function Test(done:(err:any, result:any) => void) {
