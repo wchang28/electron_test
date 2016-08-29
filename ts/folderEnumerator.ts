@@ -47,6 +47,7 @@ export class FolderEnumerator extends events.EventEmitter {
         return (this.__results ? this.__results.length : 0);
     }
     private walk(dir:string, done: (err:any) => void) : void {
+        dir = dir.replace(/\\/gi, '/');
         //console.log('walk in ' + dir);
         if (this.stopping) {
             done(null);
@@ -87,14 +88,16 @@ export class FolderEnumerator extends events.EventEmitter {
         }
     };
 
-    run(dir:string) : void {
+    run(dir:string, done?: (canceled:boolean) =>void) : void {
         if (!this.running && !this.stopping) {
             this.running = true;
             this.__results = [];
             this.emit('files-count', this.filesCount);
             this.walk(dir, (err:any) => {
+                let canceled = this.stopping;
                 this.stopping = false;
                 this.running = false;
+                if (typeof done === 'function') done(canceled);
             });
         }
     }

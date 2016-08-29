@@ -128,12 +128,16 @@ export function selectAndEnumFilesInDir(done:(err:any) => void) {
 }
 */
 
+import * as path from 'path';
+import * as fu from './filesUploader';
+
 let enumerator = new fe.FolderEnumerator();
 
 export function selectAndEnumFilesInDir(done:(err:any) => void) {
   let dirs = dialog.showOpenDialog(win,{properties: ['openFile', 'openDirectory']});
   if (dirs && dirs.length > 0) {
     let dir = dirs[0];
+    dir = dir.replace(/\\/gi, '/');
     console.log('dir=' + dir);
     enumerator.on('status-changed', (status:fe.Status) => {
       console.log('status=' + JSON.stringify(status));
@@ -141,9 +145,28 @@ export function selectAndEnumFilesInDir(done:(err:any) => void) {
         console.log('files-count=' + enumerator.filesCount.toString());
       }
     }).on('files-count', (filesCount: number) => {
-      console.log('files-count=' + filesCount.toString());
+      //console.log('files-count=' + filesCount.toString());
     })
-    enumerator.run(dir);
+    enumerator.run(dir, (canceled: boolean) => {
+      if (!canceled) {
+        //console.log(enumerator.results);
+        let fileNameMaker = (file:string): string =>{
+          return file.substr((dir + '/').length);
+        };
+        for (let i in enumerator.results) {
+          console.log(fileNameMaker(enumerator.results[i]));
+        }
+        /*
+        let uploader = new fu.FilesUploader();
+        uploader.on('upload-progress', (status:fu.Status) => {
+          console.log('status=' + JSON.stringify(status));
+        })
+        uploader.upload(enumerator.results, fileNameMaker, (canceled: boolean) => {
+          console.log('Done');
+        });
+        */
+      }
+    });
     /*
     setTimeout(() => {
       if (enumerator.running) {
@@ -154,6 +177,8 @@ export function selectAndEnumFilesInDir(done:(err:any) => void) {
     */
   }
 }
+
+
 
 //import {Test as UploadTest} from './test';
 

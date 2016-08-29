@@ -1,5 +1,14 @@
 import * as events from 'events';
 import * as fs from 'fs';
+import * as rcf from 'rcf';
+import * as $node from 'rest-node';
+import * as FormData from 'form-data';
+import * as path from 'path';
+
+export interface Status {
+    uploading: boolean;
+    stopping: boolean;
+}
 
 export interface UploadProgress {
     uploaded: number;
@@ -9,6 +18,12 @@ export interface UploadProgress {
     estimatedRemainMS?: number;
     estimatedFinishTime?: Date;
 }
+
+let connectOptions: rcf.ApiInstanceConnectOptions = {
+	"instance_url": "http://127.0.0.1:8080"
+};
+
+let api = new rcf.AuthorizedRestApi($node.get(), rcf.AuthorizedRestApi.connectOptionsToAccess(connectOptions));
 
 export class FilesUploader extends events.EventEmitter {
     private __uploading: boolean;
@@ -26,7 +41,7 @@ export class FilesUploader extends events.EventEmitter {
     set uploading(newValue: boolean) {
         if (newValue !== this.__uploading) {
             this.__uploading = newValue;
-            this.emit('status-changed');
+            this.emit('status-changed', this.status);
         }
     }
     get stopping() : boolean {
@@ -35,8 +50,11 @@ export class FilesUploader extends events.EventEmitter {
     set stopping(newValue: boolean) {
         if (newValue !== this.__stopping) {
             this.__stopping = newValue;
-            this.emit('status-changed');
+            this.emit('status-changed', this.status);
         }
+    }
+    get status() : Status {
+        return {uploading: this.uploading, stopping: this.stopping};
     }
     private getProgress(uploaded:number, total:number) : UploadProgress {
         let now = new Date();
@@ -54,21 +72,26 @@ export class FilesUploader extends events.EventEmitter {
         }
         return progress;
     }
-    private uploadFileImp(file:string, done:(err:any) => void) {
-        // TODO:
+    private uploadFileImp(file:string, fileNameMaker: (file:string) => string, done:(err:any) => void) {
+        let form = new FormData();
+        form.append("file", fs.createReadStream(file), fileNameMaker(file));
+        //api.$F('/services/upload/file_upload', form, done);
+        api.$F('/services/upload/s3_upload', form, done);
     }
-    upload(files: string[]) : void {
+    upload(files: string[], fileNameMaker: (file:string) => string, done?:(canceled:boolean) =>void) : void {
         let n = (files ? files.length : 0);
         let getDoneHandler = (i: number) => {
             return (err:any) => {
                 this.emit('upload-progress', this.getProgress(i+1, n));
                 // progress (i+1)/n
                 if (this.stopping || i === n - 1) {
+                    let canceled = this.stopping;
                     this.__startTime = null;
                     this.uploading = false;
                     this.stopping = false;
+                    if (typeof done === 'function') done(canceled);
                 } else {
-                    this.uploadFileImp(files[i + 1], getDoneHandler(i+1));
+                    this.uploadFileImp(files[i + 1], fileNameMaker, getDoneHandler(i+1));
                 }
             };
         };
@@ -76,7 +99,7 @@ export class FilesUploader extends events.EventEmitter {
         if (!this.uploading && !this.stopping && n > 0) {
             this.__startTime = new Date();
             this.uploading = true;
-            this.uploadFileImp(files[0], getDoneHandler(0));
+            this.uploadFileImp(files[0], fileNameMaker, getDoneHandler(0));
         }
     }
     stop() : void {
