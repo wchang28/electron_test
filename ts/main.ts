@@ -56,7 +56,47 @@ app.on('activate', () => {
 // code. You can also put them in separate files and require them here.
 
 import {dialog} from 'electron';
+import * as fs from 'fs';
+
+let walk = (dir:string, done: (err:any, results?:string[]) => void) : void => {
+	let results = [];
+	fs.readdir(dir, (err, list: string[]) => {
+		if (err) return done(err);
+		var i = 0;
+		let next = () => {
+			let file = list[i++];
+			if (!file) return done(null, results);
+			file = dir + '/' + file;
+			fs.stat(file, function(err, stat) {
+				if (stat && stat.isDirectory()) {
+					walk(file, (err:any, res?:string[]) => {
+						results = results.concat(res);
+						next();
+					});
+				} else {
+					results.push(file);
+					next();
+				}
+			});
+		};
+
+		next();
+	});
+};
 
 export function Test() {
-    console.log(dialog.showOpenDialog(win,{properties: ['openFile', 'openDirectory', 'multiSelections']}));
+  let dirs = dialog.showOpenDialog(win,{properties: ['openFile', 'openDirectory']});
+  if (dirs && dirs.length > 0) {
+    let dir = dirs[0];
+    console.log('dir=' + dir);
+    walk(dir , (err: any, results:string[]) => {
+      if (!err) {
+        console.log(results);
+        console.log('========================================================');
+        console.log('number of files: ' + results.length);
+        console.log('========================================================');
+      }
+    });
+
+  }
 }
