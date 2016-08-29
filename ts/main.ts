@@ -149,24 +149,25 @@ export function selectAndEnumFilesInDir(done:(err:any) => void) {
     })
     enumerator.run(dir, (canceled: boolean) => {
       if (!canceled) {
+         console.log(dir);
         //console.log(enumerator.results);
         let subFilderMaker = (file:string): string => {
           let ret = path.parse(file);
-          return ret.dir.substr((dir).length);
+          let s = ret.dir.substr((dir).length)
+          return (s.length === 0 ? '/' : s);
         };
-        for (let i in enumerator.results) {
-          console.log(subFilderMaker(enumerator.results[i]));
-        }
-        
         /*
+        for (let i in enumerator.results) {
+          console.log(enumerator.results[i] + ' ---> ' + subFilderMaker(enumerator.results[i]));
+        }
+        */
         let uploader = new fu.FilesUploader();
         uploader.on('upload-progress', (status:fu.Status) => {
-          //console.log('status=' + JSON.stringify(status));
+          console.log('status=' + JSON.stringify(status));
         })
         uploader.upload(enumerator.results, subFilderMaker, (canceled: boolean) => {
           console.log('Done');
         });
-        */
       }
     });
     /*

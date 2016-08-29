@@ -72,17 +72,16 @@ export class FilesUploader extends events.EventEmitter {
         }
         return progress;
     }
-    private uploadFileImp(file:string, fileNameMaker: (file:string) => string, done:(err:any) => void) {
+    private uploadFileImp(file:string, subFilderMaker: (file:string) => string, done:(err:any) => void) {
         let form = new FormData();
-        let s = fileNameMaker(file);
+        let subFilder = subFilderMaker(file);
         let ret = path.parse(file);
-        console.log(JSON.stringify(ret));
-
+        form.append('subFilder', subFilder);
         form.append("file", fs.createReadStream(file), ret.base);
         //api.$F('/services/upload/file_upload', form, done);
         api.$F('/services/upload/s3_upload', form, done);
     }
-    upload(files: string[], fileNameMaker: (file:string) => string, done?:(canceled:boolean) =>void) : void {
+    upload(files: string[], subFilderMaker: (file:string) => string, done?:(canceled:boolean) =>void) : void {
         let n = (files ? files.length : 0);
         let getDoneHandler = (i: number) => {
             return (err:any) => {
@@ -95,7 +94,7 @@ export class FilesUploader extends events.EventEmitter {
                     this.stopping = false;
                     if (typeof done === 'function') done(canceled);
                 } else {
-                    this.uploadFileImp(files[i + 1], fileNameMaker, getDoneHandler(i+1));
+                    this.uploadFileImp(files[i + 1], subFilderMaker, getDoneHandler(i+1));
                 }
             };
         };
@@ -103,7 +102,7 @@ export class FilesUploader extends events.EventEmitter {
         if (!this.uploading && !this.stopping && n > 0) {
             this.__startTime = new Date();
             this.uploading = true;
-            this.uploadFileImp(files[0], fileNameMaker, getDoneHandler(0));
+            this.uploadFileImp(files[0], subFilderMaker, getDoneHandler(0));
         }
     }
     stop() : void {
