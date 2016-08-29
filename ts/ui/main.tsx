@@ -5,8 +5,8 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
 let x = remote.require('./main');
-let test = x.Test;
-test((err:any, ret:any) => {
+let selectAndEnumFilesInDir = x.selectAndEnumFilesInDir;
+selectAndEnumFilesInDir((err:any, ret:any) => {
     if (err)
         alert(JSON.stringify(err));
     else

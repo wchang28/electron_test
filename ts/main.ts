@@ -86,8 +86,7 @@ let walk = (dir:string, done: (err:any, results?:string[]) => void) : void => {
 
 import {Test as UploadTest} from './test';
 
-/*
-export function Test() {
+export function selectAndEnumFilesInDir(done:(err:any, result:any) => void) {
   let dirs = dialog.showOpenDialog(win,{properties: ['openFile', 'openDirectory']});
   if (dirs && dirs.length > 0) {
     let dir = dirs[0];
@@ -98,13 +97,17 @@ export function Test() {
         console.log('========================================================');
         console.log('number of files: ' + results.length);
         console.log('========================================================');
-      }
+        done(null, results);
+      } else
+        done(err, null);
     });
 
+  } else {
+    done(null, []);
   }
 }
-*/
 
+/*
 export function Test(done:(err:any, result:any) => void) {
 
     let handler = (err:any, ret:any) => {
@@ -118,3 +121,5 @@ export function Test(done:(err:any, result:any) => void) {
 
   UploadTest(handler);
 }
+
+*/
