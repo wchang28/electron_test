@@ -81,7 +81,9 @@ export class FilesUploader extends events.EventEmitter {
         //api.$F('/services/upload/file_upload', form, done);
         console.log('');
         console.log('uploading file: ' + file + ', subFilder=' + subFilder + ', parsed=' + JSON.stringify(ret));
-        api.$F('/services/upload/s3_upload', form, (err:any, ret:any) => {
+        //let p = '/services/upload/s3_upload';
+        let p = '/services/upload/file_upload';
+        api.$F(p, form, (err:any, ret:any) => {
             console.log(err ? '!!! FAILED :-(' : 'SUCCESS :-)');
             done(err);
         });

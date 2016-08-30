@@ -4,19 +4,23 @@ import {app, BrowserWindow} from 'electron';
 // be closed automatically when the JavaScript object is garbage collected.
 let win:Electron.BrowserWindow;
 
+import {Test as TestS3} from './testS3'
 function createWindow () {
+  TestS3();
+  /*
   let file = 'C:/upload/.npmignore';
-  let ret = path.parse(file);
-  console.log(JSON.stringify(ret));
-  let strm = fs.createReadStream(file, 'utf8');
-  //console.log(JSON.stringify(strm));
-  //let s = fs.readFileSync(file, 'utf8');
-  //console.log(s);
-  strm.on('data', (data:string) => {
+  let rs = fs.createReadStream(file, 'utf8');
+  let ws = fs.createWriteStream('c:/tmp/.npmignore');
+  rs.on('data', (data:string) => {
     console.log(data);
   }).on('end', () => {
-    console.log('<<END>>');
+    console.log('rs <<END>>');
   });
+  ws.on('close', () => {
+    console.log('ws <<CLOSE>>');
+  });
+  rs.pipe(ws);
+  */
 
   let options: Electron.BrowserWindowOptions = {};
   options.width = 800;
