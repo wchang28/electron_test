@@ -6,7 +6,7 @@ let win:Electron.BrowserWindow;
 
 import {Test as TestS3} from './testS3'
 function createWindow () {
-  TestS3();
+  //TestS3();
   /*
   let file = 'C:/upload/.npmignore';
   let rs = fs.createReadStream(file, 'utf8');
@@ -118,32 +118,6 @@ export function getCurrentFolderSelectedStat() : IFolderSelectedStat {
   return (__selected && __selected.dir && __selected.files && __selected.files.length > 0 ? {dir:__selected.dir, numFiles: __selected.files.length} : null);
 }
 
-/*
-export function selectAndEnumFilesInDir(done:(err:any) => void) {
-  let dirs = dialog.showOpenDialog(win,{properties: ['openFile', 'openDirectory']});
-  if (dirs && dirs.length > 0) {
-    let dir = dirs[0];
-    console.log('dir=' + dir);
-    walk(dir , (err: any, results:string[]) => {
-      if (!err) {
-        __selected = {
-          dir
-          ,files: results
-        };
-        console.log(results);
-        console.log('========================================================');
-        console.log('number of files: ' + results.length);
-        console.log('========================================================');
-        done(null);
-      } else
-        done(err);
-    });
-
-  } else {
-    done(null);
-  }
-}
-*/
 
 import * as path from 'path';
 import * as fu from './filesUploader';
@@ -180,7 +154,7 @@ export function selectAndEnumFilesInDir(done:(err:any) => void) {
         */
         let uploader = new fu.FilesUploader();
         uploader.on('upload-progress', (status:fu.Status) => {
-          //console.log('status=' + JSON.stringify(status));
+          console.log('status=' + JSON.stringify(status));
         })
         uploader.upload(enumerator.results, subFilderMaker, (canceled: boolean) => {
           console.log('Done');
