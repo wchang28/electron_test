@@ -14,8 +14,8 @@ class Transformer extends stream.Transform {
 }
 
 export function Test() : void {
-    let file = 'C:/test/apiuser@firstkeymortgage.com-deploy-1460735903961.zip';
-    //let file = 'C:/test/.npmignore';
+    //let file = 'C:/test/apiuser@firstkeymortgage.com-deploy-1460735903961.zip';
+    let file = 'C:/test/.npmignore';
     let ret = path.parse(file);
     let rs = fs.createReadStream(file);
 
@@ -33,12 +33,17 @@ export function Test() : void {
     };
     if (additonalS3Options) params = _.assignIn(params, additonalS3Options);
     transform.on('pipe', () => {
+        s3.upload(params, (err:any, data: any) => {
+            transform.emit('close');
+        })
+        /*
         s3.upload(params)
         .on('httpUploadProgress', function(evt) {
             //console.log(evt);
         }).send(function(err, data) {
             transform.emit('close');
         });
+        */
     });
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
