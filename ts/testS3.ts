@@ -4,6 +4,15 @@ import * as _ from 'lodash';
 import * as stream from 'stream';
 import * as path from 'path';
 
+class Transformer extends stream.Transform {
+    constructor(opts?: stream.TransformOptions) {
+        super(opts);
+    }
+    _transform(chunk: any, encoding: string, callback: Function): void {
+        callback(null, chunk);
+    }
+}
+
 export function Test() : void {
     //let file = 'C:/test/apiuser@firstkeymortgage.com-deploy-1460735903961.zip';
     let file = 'C:/test/.npmignore';
@@ -11,11 +20,7 @@ export function Test() : void {
     let rs = fs.createReadStream(file);
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
-    let transform = new stream.Transform({
-        transform: (chunk, encoding, callback) => {
-            callback(null, chunk);
-        }
-    });
+    let transform = new Transformer();
     let s3 = new AWS.S3();
     let params:any = {
         Bucket: 's3-fkh-tst'
