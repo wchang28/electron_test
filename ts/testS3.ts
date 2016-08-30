@@ -34,16 +34,11 @@ export function Test() : void {
     if (additonalS3Options) params = _.assignIn(params, additonalS3Options);
     transform.on('pipe', () => {
         s3.upload(params, (err:any, data: any) => {
-            transform.emit('close');
+            if (err)
+                transform.emit('error', err);
+            else
+                transform.emit('close');
         })
-        /*
-        s3.upload(params)
-        .on('httpUploadProgress', function(evt) {
-            //console.log(evt);
-        }).send(function(err, data) {
-            transform.emit('close');
-        });
-        */
     });
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
