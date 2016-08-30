@@ -5,6 +5,19 @@ import {app, BrowserWindow} from 'electron';
 let win:Electron.BrowserWindow;
 
 function createWindow () {
+  let file = 'C:/upload/.npmignore';
+  let ret = path.parse(file);
+  console.log(JSON.stringify(ret));
+  let strm = fs.createReadStream(file, 'utf8');
+  //console.log(JSON.stringify(strm));
+  //let s = fs.readFileSync(file, 'utf8');
+  //console.log(s);
+  strm.on('data', (data:string) => {
+    console.log(data);
+  }).on('end', () => {
+    console.log('<<END>>');
+  });
+
   let options: Electron.BrowserWindowOptions = {};
   options.width = 800;
   options.height = 600;
@@ -163,7 +176,7 @@ export function selectAndEnumFilesInDir(done:(err:any) => void) {
         */
         let uploader = new fu.FilesUploader();
         uploader.on('upload-progress', (status:fu.Status) => {
-          console.log('status=' + JSON.stringify(status));
+          //console.log('status=' + JSON.stringify(status));
         })
         uploader.upload(enumerator.results, subFilderMaker, (canceled: boolean) => {
           console.log('Done');
