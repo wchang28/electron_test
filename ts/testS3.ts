@@ -14,8 +14,8 @@ class Transformer extends stream.Transform {
 }
 
 export function Test() : void {
-    //let file = 'C:/test/apiuser@firstkeymortgage.com-deploy-1460735903961.zip';
-    let file = 'C:/test/.npmignore';
+    let file = 'C:/test/apiuser@firstkeymortgage.com-deploy-1460735903961.zip';
+    //let file = 'C:/test/.npmignore';
     let ret = path.parse(file);
     let rs = fs.createReadStream(file);
 
