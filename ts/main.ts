@@ -154,7 +154,7 @@ export function selectAndEnumFilesInDir(done:(err:any) => void) {
         */
         let uploader = new fu.FilesUploader();
         uploader.on('upload-progress', (status:fu.Status) => {
-          console.log('status=' + JSON.stringify(status));
+          console.log('status=' + JSON.stringify(status, null, 2));
         })
         uploader.upload(enumerator.results, subFilderMaker, (canceled: boolean) => {
           console.log('Done');
