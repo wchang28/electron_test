@@ -77,13 +77,30 @@ function createLoginWindow () {
 
   // and load the index.html of the app.
   //win.loadURL('file://${__dirname}/../public/index.html')
-  winLogin.loadURL('https://harvest-api-prd.firstkeyholdings.com:34821/services/oauth2/authorize?response_type=token&client_id=OrT22SXWRxBSNy2i_gIHerN5cDdqgMCLg-V_i3xXRalgYAXZ3ZjSdpiWu90fvuZRLJCMlhA6dkzA59-TYfjW&redirect_uri=about%3Ablank%2Fauthcode_callback')
+  //winLogin.loadURL('https://harvest-api-prd.firstkeyholdings.com:34821/services/oauth2/authorize?response_type=token&client_id=OrT22SXWRxBSNy2i_gIHerN5cDdqgMCLg-V_i3xXRalgYAXZ3ZjSdpiWu90fvuZRLJCMlhA6dkzA59-TYfjW&redirect_uri=about%3Ablank%2Fauthcode_callback')
+  winLogin.loadURL('https://harvest-api-prd.firstkeyholdings.com:34821/services/oauth2/authorize?response_type=token&client_id=OrT22SXWRxBSNy2i_gIHerN5cDdqgMCLg-V_i3xXRalgYAXZ3ZjSdpiWu90fvuZRLJCMlhA6dkzA59-TYfjW&redirect_uri=https%3A%2F%2Fharvest-api-prd.firstkeyholdings.com%3A34821%2Fauth_callback_helper')
 
   
   winLogin.webContents.on('did-navigate', (event:Electron.Event, url:string) => {
     console.log('"did-navigate" to ' + url);
-    console.log(winLogin.webContents.getURL());
-
+    console.log('');
+    //console.log(winLogin.webContents.getURL());
+    let x = url.indexOf('#');
+    let access = {};
+    if (x != -1) {
+      let qs = url.substr(x+1);
+      let parts = qs.split('&');
+      for (let i in parts) {
+        let s = parts[i];
+        let p = s.split('=');
+        let fld = decodeURIComponent(p[0])
+        let value = decodeURIComponent(p[1]);
+        access[fld] = value;
+      }
+      console.log('access=');
+      console.log(JSON.stringify(access, null, 2));
+      winLogin.close();
+    }
   });
 
   // Open the DevTools.
