@@ -71,7 +71,7 @@ function createLoginWindow () {
   options.height = 600;
   options.autoHideMenuBar = true;
   options.darkTheme = true;
-  options.title = "Harvest Login";
+  options.title = "Harvest Electron Login";
   // Create the browser window.
   winLogin = new BrowserWindow(options);
 
@@ -104,7 +104,7 @@ function createLoginWindow () {
   });
 
   // Open the DevTools.
-  winLogin.webContents.openDevTools()
+  //winLogin.webContents.openDevTools()
 
   // Emitted when the window is closed.
   winLogin.on('closed', () => {
