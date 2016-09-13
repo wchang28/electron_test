@@ -7,12 +7,14 @@ import * as ReactDOM from 'react-dom';
 let x = remote.require('./main');
 let getCurrentFolderSelectedStat = x.getCurrentFolderSelectedStat;
 let selectAndEnumFilesInDir = x.selectAndEnumFilesInDir;
+/*
 selectAndEnumFilesInDir((err:any) => {
     if (err)
         alert(JSON.stringify(err));
     else
         alert("selected=" + JSON.stringify(getCurrentFolderSelectedStat()));
 });
+*/
 
 //let greeting = new g.Greeting();
 //greeting.sayHi();
