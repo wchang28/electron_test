@@ -1,5 +1,7 @@
 import {app, BrowserWindow} from 'electron';
 
+let winLogin:Electron.BrowserWindow;
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win:Electron.BrowserWindow;
@@ -47,10 +49,53 @@ function createWindow () {
   })
 }
 
+function createLoginWindow () {
+  //TestS3();
+  /*
+  let file = 'C:/upload/.npmignore';
+  let rs = fs.createReadStream(file, 'utf8');
+  let ws = fs.createWriteStream('c:/tmp/.npmignore');
+  rs.on('data', (data:string) => {
+    console.log(data);
+  }).on('end', () => {
+    console.log('rs <<END>>');
+  });
+  ws.on('close', () => {
+    console.log('ws <<CLOSE>>');
+  });
+  rs.pipe(ws);
+  */
+
+  let options: Electron.BrowserWindowOptions = {};
+  options.width = 800;
+  options.height = 600;
+  options.autoHideMenuBar = true;
+  options.darkTheme = true;
+  options.title = "Harvest Login";
+  // Create the browser window.
+  winLogin = new BrowserWindow(options);
+
+  // and load the index.html of the app.
+  //win.loadURL(`file://${__dirname}/../public/index.html`)
+  winLogin.loadURL('https://harvest-api-prd.firstkeyholdings.com:34821/services/oauth2/authorize?response_type=token&client_id=OrT22SXWRxBSNy2i_gIHerN5cDdqgMCLg-V_i3xXRalgYAXZ3ZjSdpiWu90fvuZRLJCMlhA6dkzA59-TYfjW&redirect_uri=about%3Ablank%2Fauthcode_callback')
+
+  // Open the DevTools.
+  winLogin.webContents.openDevTools()
+
+  // Emitted when the window is closed.
+  winLogin.on('closed', () => {
+    // Dereference the window object, usually you would store windows
+    // in an array if your app supports multi windows, this is the time
+    // when you should delete the corresponding element.
+    winLogin = null
+  })
+}
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow)
+//app.on('ready', createWindow)
+app.on('ready', createLoginWindow)
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
